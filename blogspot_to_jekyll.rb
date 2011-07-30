@@ -5,7 +5,7 @@
 # Basic Usage
 # -----------
 #
-#   ruby blogger_to_jekyll.rb feed_url
+#   ./blogger_to_jekyll.rb feed_url
 #
 #  where `feed_url` can have the following format:
 #
@@ -16,6 +16,11 @@
 # 
 #  * feedzirra: https://github.com/pauldix/feedzirra
 #
+# Notes
+# -----
+#
+#  * Make sure Blogger shows full output of article in feeds.
+#  * Commenting on migrated articles will be set to false by default.
 
 require 'feedzirra'
 require 'date'
@@ -36,6 +41,7 @@ def parse_post_entries(feed, verbose)
     obj["title"] = title
     obj["creation_datetime"] = created_datetime
     obj["content"] = content
+    obj["categories"] = post.categories.join(" ")
     posts.push(obj)
   end
   return posts
@@ -52,7 +58,7 @@ layout: post
 title: #{post["title"]}
 date: #{post["creation_datetime"]}
 comments: false
-categories:
+categories: #{post["categories"]}
 ---
 
 }
@@ -72,7 +78,7 @@ end
 def main
   options = {}
   opt_parser = OptionParser.new do |opt|
-    opt.banner = "Usage: blogger_to_jekyll.rb FEED_URL [OPTIONS]"
+    opt.banner = "Usage: ./blogger_to_jekyll.rb FEED_URL [OPTIONS]"
     opt.separator ""
     opt.separator "Options"
     
