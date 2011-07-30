@@ -11,13 +11,6 @@
 #
 #  http://{your_blog_name}.blogspot.com/feeds/posts/default
 #
-# Documentation
-# -------------
-#
-# Command-line arguments:
-#   -v 
-#
-#
 # Requirements
 # ------------
 # 
