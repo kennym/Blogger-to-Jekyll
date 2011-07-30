@@ -30,11 +30,12 @@ def parse_post_entries(feed, verbose)
     creation_date = Date.strptime(created_datetime.to_s, "%Y-%m-%d")
     title = post.title
     file_name = creation_date.to_s + "-" + title.split(/  */).join("-").delete('\/') + ".html"
-
+    content = post.content
+    
     obj["file_name"] = file_name
     obj["title"] = title
     obj["creation_datetime"] = created_datetime
-    obj["content"] = post.content
+    obj["content"] = content
     posts.push(obj)
   end
   return posts
@@ -54,7 +55,7 @@ comments: false
 categories:
 ---
 
-%}
+}
     File.open(file_name, "w+") {|f|
       f.write(header)
       f.write(post["content"])
