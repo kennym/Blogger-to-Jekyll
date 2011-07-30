@@ -1,47 +1,42 @@
+#!/usr/bin/env ruby
+#
 # Convert blogger (blogspot) posts to jekyll posts
 #
-# How to use
-# ----------
+# Basic Usage
+# -----------
 #
-# ruby blogger_to_jekyll.rb [feed_url]
+#   ruby blogger_to_jekyll.rb feed_url
 #
-# What it does
-# ------------
+#  where `feed_url` can have the following format:
 #
-# 1) Fetches the blog's feed
-# 2) For each post create a file with name
-#    "YYYY-MM-DD-{post-title}.html", with the following structure:
+#  http://{your_blog_name}.blogspot.com/feeds/posts/default
 #
-#       ---
-#       layout: post
-#       title: #{post-title}
-#       date: #{YYYY-mm-dd HH:MM}
-#       comments: false
-#       categories: 
-#       ---
+# Documentation
+# -------------
 #
-#       #{blog_post_content_in_html_format}
+# Command-line arguments:
+#   -v 
 #
-# 3) Write each file to a directory named `_posts`
 #
 # Requirements
 # ------------
-#
+# 
 #  * feedzirra: https://github.com/pauldix/feedzirra
 #
 
 require 'feedzirra'
 require 'date'
+require 'optparse'
 
 
-def parse_post_entries(feed)
+def parse_post_entries(feed, verbose)
   posts = []
   feed.entries.each do |post|
     obj = Hash.new
     created_datetime = post.last_modified
     creation_date = Date.strptime(created_datetime.to_s, "%Y-%m-%d")
     title = post.title
-    file_name = creation_date.to_s + "-" + title.split(/  */).join("-").delete('\/') + ".markdown"
+    file_name = creation_date.to_s + "-" + title.split(/  */).join("-").delete('\/') + ".html"
 
     obj["file_name"] = file_name
     obj["title"] = title
@@ -52,9 +47,10 @@ def parse_post_entries(feed)
   return posts
 end
 
-def write_posts(posts)
+def write_posts(posts, verbose)
   Dir.mkdir("_posts") unless File.directory?("_posts")
 
+  total = posts.length, i = 1
   posts.each do |post|
     file_name = "_posts/".concat(post["file_name"])
     header = %{---           
@@ -71,20 +67,45 @@ categories:
       f.write(post["content"])
       f.close
     }
+    
+    if verbose
+      puts "  [#{i}/#{total[0]}] Written post #{file_name}"
+      i += 1
+    end
   end
 end
 
 def main
-  feed_url = ARGV.first
+  options = {}
+  opt_parser = OptionParser.new do |opt|
+    opt.banner = "Usage: blogger_to_jekyll.rb FEED_URL [OPTIONS]"
+    opt.separator ""
+    opt.separator "Options"
+    
+    opt.on("-v", "--verbose", "Print out all.") do
+      options[:verbose] = true
+    end
+  end
+
+  opt_parser.parse!
   
-  puts "Fetching feed..."
+  if ARGV[0]
+    feed_url = ARGV.first
+  else
+    puts opt_parser
+    exit()
+  end
+
+  puts "Fetching feed #{feed_url}..."
   feed = Feedzirra::Feed.fetch_and_parse(feed_url)
   
   puts "Parsing feed..."
-  posts = parse_post_entries(feed)
+  posts = parse_post_entries(feed, options[:verbose])
   
-  puts "Writing posts..."
-  write_posts(posts)
+  puts "Writing posts to _posts/..."
+  write_posts(posts, options[:verbose])
+
+  puts "Done!"
 end
 
 main()
