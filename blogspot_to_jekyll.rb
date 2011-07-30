@@ -1,19 +1,33 @@
-# Short overview:
-# 1) Fetch blogger feed
-# 2) For each post in feed
-#    1) create a file with name `YYYY-MM-DD-post-title.markdown`, with
-#       the following structure:
+# Convert blogger (blogspot) posts to jekyll posts
+#
+# What it does
+# ------------
+#
+# 1) Fetches the blog's feed
+# 2) For each post create a file with name
+#    "YYYY-MM-DD-{post-title}.html", with the following structure:
 #
 #       ---
 #       layout: post
-#       title: `post-title`
-#       date: 2011-07-30 10:44
-#       comments: true
+#       title: {post-title}
+#       date: {YYYY-mm-dd HH:MM}
+#       comments: false
 #       categories: 
 #       ---
 #
-#       #{blog_post_content_in_markdown_format}
-# 3) Write each file to a directory `_posts`
+#       #{blog_post_content_in_html_format}
+# 3) Write each file to a directory named `_posts`
+#
+# Requirements
+# ------------
+#
+#  * feedzirra: https://github.com/pauldix/feedzirra
+#
+# How to use
+# ----------
+#
+# ruby blogger_to_jekyll.rb [feed_url]
+#
 
 require 'feedzirra'
 require 'date'
