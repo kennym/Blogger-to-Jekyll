@@ -1,5 +1,10 @@
 # Convert blogger (blogspot) posts to jekyll posts
 #
+# How to use
+# ----------
+#
+# ruby blogger_to_jekyll.rb [feed_url]
+#
 # What it does
 # ------------
 #
@@ -9,13 +14,14 @@
 #
 #       ---
 #       layout: post
-#       title: {post-title}
-#       date: {YYYY-mm-dd HH:MM}
+#       title: #{post-title}
+#       date: #{YYYY-mm-dd HH:MM}
 #       comments: false
 #       categories: 
 #       ---
 #
 #       #{blog_post_content_in_html_format}
+#
 # 3) Write each file to a directory named `_posts`
 #
 # Requirements
@@ -23,14 +29,10 @@
 #
 #  * feedzirra: https://github.com/pauldix/feedzirra
 #
-# How to use
-# ----------
-#
-# ruby blogger_to_jekyll.rb [feed_url]
-#
 
 require 'feedzirra'
 require 'date'
+
 
 def parse_post_entries(feed)
   posts = []
@@ -72,12 +74,15 @@ categories:
   end
 end
 
-def main(feed_url="http://feeds.feedburner.com/Kennys/dev/null?format=xml")
+def main
+  feed_url = ARGV.first
+  
   puts "Fetching feed..."
   feed = Feedzirra::Feed.fetch_and_parse(feed_url)
   
   puts "Parsing feed..."
   posts = parse_post_entries(feed)
+  
   puts "Writing posts..."
   write_posts(posts)
 end
