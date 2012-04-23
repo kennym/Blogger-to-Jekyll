@@ -22,17 +22,19 @@
 #  * Make sure Blogger shows full output of article in feeds.
 #  * Commenting on migrated articles will be set to false by default.
 
+include Config
+
+require 'rubygems' if CONFIG['host_os'].start_with? "darwin"
 require 'feedzirra'
 require 'date'
 require 'optparse'
-
 
 def parse_post_entries(feed, verbose)
   posts = []
   feed.entries.each do |post|
     obj = Hash.new
-    created_datetime = post.last_modified
-    creation_date = Date.strptime(created_datetime.to_s, "%Y-%m-%d")
+    created_datetime = post.updated
+    creation_date = Date.parse(created_datetime.to_s)
     title = post.title
     file_name = creation_date.to_s + "-" + title.split(/  */).join("-").delete('\/') + ".html"
     content = post.content
