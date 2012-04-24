@@ -42,6 +42,7 @@ def parse_post_entries(feed, verbose)
     obj["file_name"] = file_name
     obj["title"] = title
     obj["creation_datetime"] = created_datetime
+    obj["updated_datetime"] = post.updated
     obj["content"] = content
     obj["categories"] = post.categories.join(" ")
     posts.push(obj)
@@ -59,6 +60,7 @@ def write_posts(posts, verbose)
 layout: post
 title: #{post["title"]}
 date: #{post["creation_datetime"]}
+updated: #{post["updated_datetime"]}
 comments: false
 categories: #{post["categories"]}
 ---
