@@ -1,0 +1,23 @@
+= README
+
+== Description
+
+Convert blogger (blogspot) articles to jekyll. To people's request I moved
+[[https://gist.github.com/1115810][the original gist]] to a project.
+
+== Usage
+
+ : ./blogger_to_jekyll.rb `feed_url`
+
+where `feed_url` should have the following format:
+
+ : http://{your_blog_name}.blogspot.com/feeds/posts/default
+
+== Requirements
+
+ * [[https://github.com/pauldix/feedzirra][feedzirra]]
+
+== Notes
+
+ * Make sure Blogger shows full output of article in feeds.  Commenting on
+ * migrated articles will be set to false by default.
